@@ -8,7 +8,6 @@ import blockTools from '@sanity/block-tools'
 import generateHelpUrl from '@sanity/generate-help-url'
 import FormField from 'part:@sanity/components/formfields/default'
 import Input from './Input'
-import {throttle} from 'lodash'
 import {Value} from 'slate'
 import PatchEvent, {set, unset} from '../../PatchEvent'
 import withPatchSubscriber from '../../utils/withPatchSubscriber'
@@ -20,14 +19,6 @@ const EMPTY_VALUE = Value.fromJSON(deserialize([]))
 
 function deserialize(value, type) {
   return Value.fromJSON(blockTools.blocksToSlateState(value, type))
-}
-
-function serialize(value, type) {
-  return blockTools.slateStateToBlocks(value.toJSON({preserveKeys: true}), type)
-}
-
-function isDocumentEqual(slateVal, otherSlateVal) {
-  return slateVal.get('document') === otherSlateVal.get('document')
 }
 
 function isDeprecatedBlockSchema(type) {
@@ -63,36 +54,19 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     const deprecatedSchema = isDeprecatedBlockSchema(props.type)
     const deprecatedBlockValue = isDeprecatedBlockValue(props.value)
     this.state = {
-      isOutOfSync: false,
       deprecatedSchema,
       deprecatedBlockValue,
-      value: (deprecatedSchema || deprecatedBlockValue)
+      editorValue: (deprecatedSchema || deprecatedBlockValue)
         ? EMPTY_VALUE : deserialize(props.value, props.type)
     }
     this.unsubscribe = props.subscribe(this.receivePatches)
   }
 
-  handleNodePatch = patchEvent => {
-    this.setState(prevState => {
-      if (prevState.isOutOfSync) {
-        return prevState
-      }
-      const nextValue = patchEvent.patches.reduce((state, patch) => {
-        const [key, ...path] = patch.path
-        const nodeValue = state.document.getDescendant(key).data.get('value')
-        const change = state.change()
-          .setNodeByKey(key, {
-            data: {value: apply(nodeValue, {...patch, path})}
-          })
-        return change.state
-      }, prevState.value)
-
-      return {value: nextValue}
-    })
-  }
-
-  handleChange = change => {
-    this.setState(prevState => (prevState.isOutOfSync ? {} : {value: change.value}))
+  handleChange = (change, patches) => {
+    const {onChange} = this.props
+    this.setState({editorValue: change.value})
+    console.log(patches)
+    onChange(PatchEvent.from(patches))
   }
 
   receivePatches = ({snapshot, shouldReset, patches}) => {
@@ -121,13 +95,6 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     this.unsubscribe()
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    const didSync = prevState.isOutOfSync && !this.state.isOutOfSync
-    if (!didSync && !isDocumentEqual(prevState.value, this.state.value)) {
-      this.emitSet()
-    }
-  }
-
   focus() {
     if (this._input) {
       this._input.focus()
@@ -138,26 +105,9 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     this._input = el
   }
 
-  handleSynchronize = () => {
-    this.setState({
-      value: deserialize(this.props.value, this.props.type),
-      isOutOfSync: false
-    })
-  }
-
-  emitSet = throttle(() => {
-    const {onChange} = this.props
-    // const onChange = event => console.log(event.patch.type, event.patch.value)
-    const {value} = this.state
-
-    const nextVal = serialize(value)
-
-    onChange(PatchEvent.from(nextVal ? set(nextVal) : unset()))
-
-  }, 1000, {trailing: true})
-
   render() {
-    const {value, isOutOfSync, deprecatedSchema, deprecatedBlockValue} = this.state
+    const {editorValue, deprecatedSchema, deprecatedBlockValue} = this.state
+    const {value} = this.props
 
     const isDeprecated = deprecatedSchema || deprecatedBlockValue
     const {type} = this.props
@@ -166,10 +116,9 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
         {!isDeprecated && (
           <Input
             {...this.props}
-            disabled={isOutOfSync}
             onChange={this.handleChange}
-            onNodePatch={this.handleNodePatch}
             value={value}
+            editorValue={editorValue}
             ref={this.setInput}
           />)
         }
@@ -202,18 +151,6 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
               </p>
             </div>
           </FormField>
-        )}
-
-        {isOutOfSync && (
-          <div className={styles.isOutOfSyncWarning}>
-            Heads up! Someone else edited this field.
-            Make sure to let your co-workers know that you are working on this part of the document!
-            <br />
-            We&apos;re sorry for the inconvenience and working hard to get it working properly.
-            <p>
-              <Button inverted primary onClick={this.handleSynchronize}>Load remote changes</Button>
-            </p>
-          </div>
         )}
       </div>
     )
