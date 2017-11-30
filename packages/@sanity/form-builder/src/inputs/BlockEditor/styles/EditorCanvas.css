@@ -1,3 +1,51 @@
+@import "part:@sanity/base/theme/variables-style";
+
 .root {
-  display: block;
+  position: relative;
+  width: 100%;
+  min-height: 15rem;
+  max-height: 40rem;
+  border: 1px solid var(--input-border-color);
+  background-color: var(--input-bg);
+  composes: scrollY from "part:@sanity/base/theme/layout/scrolling-style";
+  composes: lightScrollbars from "part:@sanity/base/theme/layout/scrolling-style";
+
+  @nest .fullscreen & {
+    width: 90%;
+    min-height: calc(100vh - 8rem);
+    max-width: 50em;
+    margin: 3em auto;
+    box-shadow: 0 0 0.5rem rgba(0, 0, 0, 0.2);
+    height: auto;
+    overflow: hidden;
+    max-height: none;
+    border: none;
+    background-color: var(--brand-lightest);
+    color: var(--brand-darkest);
+  }
+}
+
+.canvas {
+  border-radius: var(--input-border-radius);
+  background-color: var(--component-bg);
+  overflow: hidden;
+  width: 100%;
+  appearance: none;
+  box-sizing: border-box;
+  padding: 1em;
+
+  @nest .fullscreen & {
+    padding: 2em;
+    border: 0;
+    max-height: none;
+    background-color: var(--brand-lightest);
+    color: var(--brand-darkest);
+  }
+}
+
+.blockDragMarker {
+  background-color: var(--brand-primary);
+  width: 100%;
+  height: 2px;
+  position: absolute;
 }

@@ -1,3 +1,9 @@
+@import "part:@sanity/base/theme/variables-style";
+
+:root {
+  --blockEditorFullscreenBackground: var(--gray-lighter);
+}
+
 .root {
   @nest .fullscreen & {
     position: fixed;
