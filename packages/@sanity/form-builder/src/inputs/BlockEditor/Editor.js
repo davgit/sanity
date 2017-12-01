@@ -1,30 +1,49 @@
 // @flow
-import type {SlateComponentProps, BlockArrayType, ItemValue} from './typeDefs'
-import type {Change} from './utils/changeToPatch'
+import type {
+  Block,
+  BlockArrayType,
+  Patch,
+  SlateChange,
+  SlateComponentProps,
+  SlateMarkProps,
+  SlateValue
+} from './typeDefs'
 
 import React from 'react'
+import blockTools from '@sanity/block-tools'
 import {Editor as SlateEditor} from 'slate-react'
-import PatchEvent from '../../PatchEvent'
 import changeToPatch from './utils/changeToPatch'
 
 import ContentBlock from './ContentBlock'
+import Decorator from './nodes/Decorator'
 
 type Props = {
-  value: ItemValue[],
-  editorValue: ItemValue[],
-  onChange: PatchEvent => void,
-  type: BlockArrayType
+  editorValue: SlateValue,
+  onChange: (change: SlateChange, patches: Patch[]) => void,
+  type: BlockArrayType,
+  value: Block[]
 }
 
 export default class Editor extends React.Component<Props> {
 
   editor: ?SlateEditor
 
+  blockContentFeatures: {
+    decorators: [],
+    annotations: [],
+    styles: []
+  }
+
+  constructor(props: Props) {
+    super(props)
+    this.blockContentFeatures = blockTools.getBlockContentFeatures(props.type)
+  }
+
   refEditor = (editor: ?SlateEditor) => {
     this.editor = editor
   }
 
-  onChange = (change: Change) => {
+  handleChange = (change: SlateChange) => {
     const {value} = this.props
     const patch = changeToPatch(change, value)
     this.props.onChange(change, patch)
@@ -41,17 +60,25 @@ export default class Editor extends React.Component<Props> {
     switch (type) {
       case 'contentBlock': return <ContentBlock {...props} />
       default: throw new Error(`Uknown node type ${type}`)
+
     }
+  }
+  renderMark = (props: SlateMarkProps) => {
+    const type = props.mark.type
+    return this.blockContentFeatures.decorators.includes(type)
+      ? <Decorator {...props} />
+      : null
   }
 
   render() {
-    const {onChange, editorValue} = this.props
+    const {editorValue} = this.props
     return (
       <SlateEditor
         ref={this.refEditor}
         value={editorValue}
-        onChange={this.onChange}
+        onChange={this.handleChange}
         renderNode={this.renderNode}
+        renderMark={this.renderMark}
       />
     )
   }
