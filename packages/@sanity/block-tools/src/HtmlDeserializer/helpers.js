@@ -19,9 +19,9 @@ import resolveJsType from '../util/resolveJsType'
 
 export function createRuleOptions(blockContentType) {
   const options = blockContentTypeToOptions(blockContentType)
-  const enabledBlockStyles = options.enabledBlockStyles || DEFAULT_SUPPORTED_STYLES
-  const enabledSpanDecorators = options.enabledSpanDecorators || DEFAULT_SUPPORTED_DECORATORS
-  const enabledBlockAnnotations = options.enabledBlockAnnotations || DEFAULT_SUPPORTED_ANNOTATIONS
+  const enabledBlockStyles = options.styles || DEFAULT_SUPPORTED_STYLES
+  const enabledSpanDecorators = options.decorators || DEFAULT_SUPPORTED_DECORATORS
+  const enabledBlockAnnotations = options.annotations || DEFAULT_SUPPORTED_ANNOTATIONS
   return {
     enabledBlockStyles,
     enabledSpanDecorators,

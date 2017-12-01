@@ -39,8 +39,8 @@ export default function blockContentTypeToOptions(blockContentType) {
       .type.of.find(ofType => ofType.name === 'span')
   }
   return {
-    enabledBlockStyles: blockType ? resolveEnabledStyles(blockType) : DEFAULT_SUPPORTED_STYLES,
-    enabledSpanDecorators: spanType ? resolveEnabledDecorators(spanType) : DEFAULT_SUPPORTED_DECORATORS,
-    enabledBlockAnnotations: spanType ? resolveEnabledAnnotationTypes(spanType) : DEFAULT_SUPPORTED_ANNOTATIONS
+    styles: blockType ? resolveEnabledStyles(blockType) : DEFAULT_SUPPORTED_STYLES,
+    decorators: spanType ? resolveEnabledDecorators(spanType) : DEFAULT_SUPPORTED_DECORATORS,
+    annotations: spanType ? resolveEnabledAnnotationTypes(spanType) : DEFAULT_SUPPORTED_ANNOTATIONS
   }
 }

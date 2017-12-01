@@ -11,15 +11,15 @@ describe('blockTools', () => {
         .fields.find(field => field.name === 'body').type
 
       const expected = {
-        enabledBlockAnnotations: ['link'],
-        enabledSpanDecorators: [
+        annotations: ['link'],
+        decorators: [
           'strong',
           'em',
           'code',
           'underline',
           'strike-through'
         ],
-        enabledBlockStyles: [
+        styles: [
           'normal',
           'h1',
           'h2',

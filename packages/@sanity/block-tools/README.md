@@ -150,15 +150,15 @@ Will return an object with the features enabled for the input block content type
 
 ```js
 {
-  enabledBlockAnnotations: ['link'],
-  enabledSpanDecorators: [
+  annotations: ['link'],
+  decorators: [
     'strong',
     'em',
     'code',
     'underline',
     'strike-through'
   ],
-  enabledBlockStyles: [
+  styles: [
     'normal',
     'h1',
     'h2',
