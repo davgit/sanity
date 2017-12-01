@@ -1,7 +1,11 @@
 // @flow
 
-import type {Map} from 'immutable'
+import type {Map, List} from 'immutable'
 import type {Node} from 'react'
+import type {Patch as _Patch} from '../../utils/patches'
+import {Value as _SlateValue, Operation as _SlateOperation} from 'slate'
+
+export type Patch = _Patch
 
 export type Type = {
   type: Type,
@@ -22,9 +26,15 @@ export type BlockArrayType = Type & {
   of: Type[]
 }
 
-export type ItemValue = {
-  _type?: string,
-  _key: string
+export type Span = {
+  _key: string,
+  text: string
+}
+
+export type Block = {
+  _type: string,
+  _key: string,
+  children?: Span[]
 }
 
 export type SlateNode = {
@@ -32,6 +42,14 @@ export type SlateNode = {
   nodes: any,
   data: Map<any, any>,
   key: string
+}
+
+export type SlateMarkProps = {
+  attributes: {},
+  mark: {
+    type: string
+  },
+  children: Node[],
 }
 
 export type SlateComponentProps = {
@@ -66,6 +84,16 @@ export type ListItem = {
 export type DecoratorItem = {
   active: boolean,
   type: string
+}
+
+export type SlateValue = _SlateValue
+export type SlateOperation = _SlateOperation
+
+export type SlateChange = {
+  flags: {},
+  value: SlateValue,
+  operations: List<SlateOperation>,
+  kind: string
 }
 
 export type Annotation = any

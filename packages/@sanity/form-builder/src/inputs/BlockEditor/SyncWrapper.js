@@ -9,11 +9,9 @@ import generateHelpUrl from '@sanity/generate-help-url'
 import FormField from 'part:@sanity/components/formfields/default'
 import Input from './Input'
 import {Value} from 'slate'
-import PatchEvent, {set, unset} from '../../PatchEvent'
+import PatchEvent from '../../PatchEvent'
 import withPatchSubscriber from '../../utils/withPatchSubscriber'
-import Button from 'part:@sanity/components/buttons/default'
 import styles from './styles/SyncWrapper.css'
-import apply from '../../simplePatch'
 
 const EMPTY_VALUE = Value.fromJSON(deserialize([]))
 
@@ -56,6 +54,7 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     this.state = {
       deprecatedSchema,
       deprecatedBlockValue,
+      isOutOfSync: false,
       editorValue: (deprecatedSchema || deprecatedBlockValue)
         ? EMPTY_VALUE : deserialize(props.value, props.type)
     }
@@ -65,33 +64,27 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
   handleChange = (change, patches) => {
     const {onChange} = this.props
     this.setState({editorValue: change.value})
-    console.log(patches)
+    // console.log(patches)
     onChange(PatchEvent.from(patches))
   }
 
-  receivePatches = ({snapshot, shouldReset, patches}) => {
+  receivePatches = ({patches, shouldReset, snaphot}) => {
     if (patches.some(patch => patch.origin === 'remote')) {
       this.setState({isOutOfSync: true})
     }
+  }
 
-    if (shouldReset) {
-      // @todo
-      // eslint-disable-next-line no-console
-      // console.warn('[BlockEditor] Reset state due to set patch that targeted ancestor path:', patches)
-      // this.setState({value: deserialize(snapshot, this.props.type)})
-    }// else {
-    //   // console.log('TODO: Apply patches:', patches)
-    // }
+  componentWillReceiveProps(nextProps) {
+    const {value} = nextProps
+    if (this.state.isOutOfSync) {
+      this.setState({
+        editorValue: deserialize(value, this.props.type),
+        isOutOfSync: false
+      })
+    }
   }
 
   componentWillUnmount() {
-    // This is a defensive workaround for an issue causing content to be overwritten
-    // It cancels any pending saves, so if the component gets unmounted within the
-    // 1 second window, work may be lost.
-    // This is by no means ideal, but preferable to overwriting content in other documents
-    // Should be fixed by making the block editor "real" realtime
-    this.emitSet.cancel()
-
     this.unsubscribe()
   }
 
