@@ -1,29 +1,27 @@
 // @flow
-import type {BlockArrayType, ItemValue} from './typeDefs'
+import type {
+  Block,
+  BlockArrayType,
+  Patch,
+  SlateChange,
+  SlateValue
+} from './typeDefs'
 
 import React from 'react'
 
-import PatchEvent from '../../PatchEvent'
-
 import FormField from 'part:@sanity/components/formfields/default'
-
 
 import BlockEditor from './BlockEditor'
 
 type Props = {
-  type: BlockArrayType,
-  value: Array<ItemValue>,
-  editorValue: Array<ItemValue>,
+  editorValue: SlateValue,
   level: number,
-  onChange?: PatchEvent => void
+  onChange: (change: SlateChange, patches: Patch[]) => void,
+  type: BlockArrayType,
+  value: Block[]
 }
 
 export default class BlockEditorInput extends React.PureComponent<Props> {
-
-  static defaultProps = {
-    onChange() {},
-    onNodePatch() {}
-  }
 
   render() {
     const {type, level, ...rest} = this.props

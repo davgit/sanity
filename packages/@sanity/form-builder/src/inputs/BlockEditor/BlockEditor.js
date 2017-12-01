@@ -1,21 +1,25 @@
 // @flow
 import React from 'react'
 
-import PatchEvent from '../../PatchEvent'
-
 import EditorCanvas from './EditorCanvas'
 import FullscreenDialog from 'part:@sanity/components/dialogs/fullscreen?'
 import Toolbar from './Toolbar'
 
 import styles from './styles/BlockEditor.css'
 
-import type {BlockArrayType, ItemValue} from './typeDefs'
+import type {
+  Block,
+  BlockArrayType,
+  Patch,
+  SlateChange,
+  SlateValue
+} from './typeDefs'
 
 type Props = {
-  value: Array<ItemValue>,
-  editorValue: Array<ItemValue>,
-  onChange: PatchEvent => void,
-  type: BlockArrayType
+  editorValue: SlateValue,
+  onChange: (change: SlateChange, patches: Patch[]) => void,
+  type: BlockArrayType,
+  value: Block[]
 }
 
 export type ToolbarStyle = {

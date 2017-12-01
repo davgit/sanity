@@ -1,5 +1,11 @@
 // @flow
-import type {BlockArrayType, PatchEventType, ItemValue} from './typeDefs'
+import type {
+  Block,
+  BlockArrayType,
+  Patch,
+  SlateChange,
+  SlateValue
+} from './typeDefs'
 
 import React from 'react'
 import ReactDOM from 'react-dom'
@@ -10,11 +16,10 @@ import Editor from './Editor'
 import styles from './styles/EditorCanvas.css'
 
 type Props = {
-  value: Array<ItemValue>,
-  editorValue: Array<ItemValue>,
-  onChange: (event: PatchEventType) => void,
-  onNodePatch: (event: PatchEventType) => ItemValue,
+  editorValue: SlateValue,
+  onChange: (change: SlateChange, patches: Patch[]) => void,
   type: BlockArrayType,
+  value: Block[],
   fullscreen: boolean
 }
 
@@ -91,7 +96,7 @@ export default class EditorCanvas extends React.Component<Props> {
   }
 
   render() {
-    const {onNodePatch, onChange, value, editorValue, type} = this.props
+    const {onChange, value, editorValue, type} = this.props
     return (
       <div className={styles.root}>
         <div className={styles.canvas} onClick={this.handleCanvasClick}>
@@ -101,7 +106,6 @@ export default class EditorCanvas extends React.Component<Props> {
             editorValue={editorValue}
             type={type}
             onChange={onChange}
-            onNodePatch={onNodePatch}
           />
           <div
             ref={this.refBlockDragMarker}
