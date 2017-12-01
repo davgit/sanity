@@ -20,6 +20,18 @@ const adapter: Adapter = {
 
 export default adapter
 
+function splitPath(path) {
+  const parts = path.split(/\.|\[/)
+  return parts.map(part => {
+    if (part.slice(-1) === ']') {
+      const obj = {}
+      const exp = part.slice(0, -1).split('==')
+      obj[exp[0]] = exp[1].replace(/"/g, '')
+      return obj
+    }
+    return part
+  })
+}
 
 /**
  *
@@ -38,7 +50,7 @@ function toFormBuilder(origin, patches: Array<GradientPatch>): Array<Patch> {
           return patch.unset.map(path => {
             return {
               type: 'unset',
-              path: path.split('.'),
+              path: splitPath(path),
               origin
             }
           })
@@ -49,7 +61,7 @@ function toFormBuilder(origin, patches: Array<GradientPatch>): Array<Patch> {
             return {
               type: 'insert',
               position: position,
-              path: path.split('.'),
+              path: splitPath(path),
               items: patch[type][path],
               origin
             }
@@ -57,14 +69,14 @@ function toFormBuilder(origin, patches: Array<GradientPatch>): Array<Patch> {
           if (type === 'set') {
             return {
               type: 'set',
-              path: path.split('.'),
+              path: splitPath(path),
               value: patch[type][path],
               origin
             }
           }
           return {
             type,
-            path: path.split('.'),
+            path: splitPath(path),
             value: patch[type][path],
             origin
           }
