@@ -16,31 +16,35 @@ function resolveEnabledStyles(blockType) {
     throw new Error('The style fields need at least one style '
       + "defined. I.e: {title: 'Normal', value: 'normal'}.")
   }
-  return textStyles.map(style => style.value)
+  return textStyles
 }
 
 function resolveEnabledAnnotationTypes(spanType) {
-  return spanType.annotations.map(annotation => annotation.name)
+  return spanType.annotations.map(annotation => {
+    return {
+      title: annotation.title,
+      value: annotation.name
+    }
+  })
 }
 
 function resolveEnabledDecorators(spanType) {
-  return spanType.decorators.map(decorator => decorator.value)
+  return spanType.decorators
 }
 
 export default function blockContentTypeToOptions(blockContentType) {
-  let blockType
-  let spanType
-  if (blockContentType) {
-    blockType = blockContentType.of.find(field => field.name === 'block')
-    if (!blockType) {
-      throw new Error("'block' type is not defined in this schema (required).")
-    }
-    spanType = blockType.fields.find(field => field.name === 'spans')
-      .type.of.find(ofType => ofType.name === 'span')
+  if (!blockContentType) {
+    throw new Error("Parameter 'blockContentType' required")
   }
+  const blockType = blockContentType.of.find(field => field.name === 'block')
+  if (!blockType) {
+    throw new Error("'block' type is not defined in this schema (required).")
+  }
+  const spanType = blockType.fields.find(field => field.name === 'spans')
+    .type.of.find(ofType => ofType.name === 'span')
   return {
-    styles: blockType ? resolveEnabledStyles(blockType) : DEFAULT_SUPPORTED_STYLES,
-    decorators: spanType ? resolveEnabledDecorators(spanType) : DEFAULT_SUPPORTED_DECORATORS,
-    annotations: spanType ? resolveEnabledAnnotationTypes(spanType) : DEFAULT_SUPPORTED_ANNOTATIONS
+    styles: resolveEnabledStyles(blockType),
+    decorators: resolveEnabledDecorators(spanType),
+    annotations: resolveEnabledAnnotationTypes(spanType)
   }
 }

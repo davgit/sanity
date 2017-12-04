@@ -5,10 +5,23 @@ const blockContentType = defaultSchema.get('blogPost')
 
 
 const rules = [
+  // Map 'em' tags to 'strong'
+  {
+    deserialize(el, next) {
+      if (el.tagName.toLowerCase() !== 'em') {
+        return undefined
+      }
+      return {
+        _type: '__decorator',
+        name: 'strong',
+        children: next(el.childNodes)
+      }
+    }
+  },
   {
     // Special case for code blocks (wrapped in pre and code tag)
     deserialize(el, next) {
-      if (el.tagName.toLowerCase() != 'pre') {
+      if (el.tagName.toLowerCase() !== 'pre') {
         return undefined
       }
       const code = el.children[0]
@@ -31,8 +44,7 @@ const rules = [
 export default (html, blockTools, commonOptions) => {
   const options = {
     ...commonOptions,
-    blockContentType,
     rules
   }
-  return blockTools.htmlToBlocks(html, options)
+  return blockTools.htmlToBlocks(html, blockContentType, options)
 }

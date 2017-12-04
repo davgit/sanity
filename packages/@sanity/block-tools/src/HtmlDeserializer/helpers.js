@@ -1,9 +1,4 @@
-import {
-  DEFAULT_BLOCK,
-  DEFAULT_SUPPORTED_STYLES,
-  DEFAULT_SUPPORTED_DECORATORS,
-  DEFAULT_SUPPORTED_ANNOTATIONS,
-} from '../constants'
+import {DEFAULT_BLOCK} from '../constants'
 import blockContentTypeToOptions from '../util/blockContentTypeToOptions'
 import preprocessors from './preprocessors'
 import resolveJsType from '../util/resolveJsType'
@@ -19,9 +14,10 @@ import resolveJsType from '../util/resolveJsType'
 
 export function createRuleOptions(blockContentType) {
   const options = blockContentTypeToOptions(blockContentType)
-  const enabledBlockStyles = options.styles || DEFAULT_SUPPORTED_STYLES
-  const enabledSpanDecorators = options.decorators || DEFAULT_SUPPORTED_DECORATORS
-  const enabledBlockAnnotations = options.annotations || DEFAULT_SUPPORTED_ANNOTATIONS
+  const mapItem = item => item.value
+  const enabledBlockStyles = options.styles.map(mapItem)
+  const enabledSpanDecorators = options.decorators.map(mapItem)
+  const enabledBlockAnnotations = options.annotations.map(mapItem)
   return {
     enabledBlockStyles,
     enabledSpanDecorators,

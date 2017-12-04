@@ -11,7 +11,6 @@ import {
 } from '../../constants'
 import {tagName} from '../helpers'
 
-
 export function resolveListItem(listNodeTagName) {
   let listStyle
   switch (listNodeTagName) {
@@ -162,7 +161,7 @@ export default function createDefaultRules(blockContentType, options = {}) {
             ? next(el.childNodes)
             : (
               el.appendChild(
-                new Text(` (${href})`) // TODO: make server side compatible
+                el.ownerDocument.createTextNode(` (${href})`)
               ) && next(el.childNodes)
             )
         }

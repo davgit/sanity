@@ -1,3 +1,4 @@
+import Schema from '@sanity/schema'
 import {
   createRuleOptions,
   defaultParseHtml,
@@ -35,9 +36,11 @@ export default class HtmlDeserializer {
    *      API compatible model as returned from DOMParser for using server side.
    */
 
-  constructor(options = {}) {
+  constructor(blockContentType, options = {}) {
     const {rules = []} = options
-    const blockContentType = options.blockContentType
+    if (!blockContentType) {
+      throw new Error("Parameter 'blockContentType' is required")
+    }
     const standardRules = createRules(
       blockContentType,
       createRuleOptions(blockContentType)
