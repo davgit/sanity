@@ -10,43 +10,28 @@
   @media (--screen-medium) {
     font-size: 0.8rem;
   }
-}
 
-.insertContainer {
-  display: block;
-}
+  @nest &.fullscreen {
+    position: fixed;
+    box-sizing: border-box;
+    width: 100vw;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    background-color: color(var(--gray-lighter) a(90%));
+    padding: var(--small-padding);
+    height: 4rem;
 
-.decoratorContainer {
-  padding-left: 0.5em;
-}
-
-.listFormatContainer {
-  padding-left: 0.5em;
-}
-
-.blockFormatContainer {
-  max-width: 5em;
-  min-width: 4em;
-  padding-right: 0.5em;
-
-  @media (--screen-medium) {
-    max-width: none;
-    min-width: 8em;
-    padding-top: 0.2em;
+    @media (--screen-medium) {
+      padding: var(--medium-padding);
+    }
   }
-}
-
-.annotationsContainer {
-  display: block;
-}
-
-.formatButtons {
-  display: flex;
-  flex-wrap: nowrap;
 }
 
 .fullscreenButtonContainer {
   margin-left: auto;
+  height: 100%;
 
   @nest & svg {
     transform: scale(1.5);

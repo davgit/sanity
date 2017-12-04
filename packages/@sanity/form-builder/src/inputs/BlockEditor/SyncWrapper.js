@@ -9,8 +9,10 @@ import generateHelpUrl from '@sanity/generate-help-url'
 import FormField from 'part:@sanity/components/formfields/default'
 import Input from './Input'
 import {Value} from 'slate'
-import PatchEvent from '../../PatchEvent'
 import withPatchSubscriber from '../../utils/withPatchSubscriber'
+import patchesToChange from './utils/patchesToChange'
+import changeToPatches from './utils/changeToPatches'
+import PatchEvent from '../../PatchEvent'
 import styles from './styles/SyncWrapper.css'
 
 const EMPTY_VALUE = Value.fromJSON(deserialize([]))
@@ -54,53 +56,33 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     this.state = {
       deprecatedSchema,
       deprecatedBlockValue,
-      isOutOfSync: false,
       editorValue: (deprecatedSchema || deprecatedBlockValue)
         ? EMPTY_VALUE : deserialize(props.value, props.type)
     }
     this.unsubscribe = props.subscribe(this.receivePatches)
   }
 
-  handleChange = (change, patches) => {
-    const {onChange} = this.props
+  handleChange = (change: SlateChange) => {
+    const {value, onChange} = this.props
     this.setState({editorValue: change.value})
-    // console.log(patches)
-    onChange(PatchEvent.from(patches))
+    // const patches = changeToPatches(change, value)
+    // onChange(PatchEvent.from(patches))
   }
 
-  receivePatches = ({patches, shouldReset, snaphot}) => {
-    if (patches.some(patch => patch.origin === 'remote')) {
-      this.setState({isOutOfSync: true})
-    }
-  }
-
-  componentWillReceiveProps(nextProps) {
-    const {value} = nextProps
-    if (this.state.isOutOfSync) {
-      this.setState({
-        editorValue: deserialize(value, this.props.type),
-        isOutOfSync: false
-      })
-    }
+  receivePatches = ({patches, shouldReset, snapshot}) => {
+    // if (patches.some(patch => patch.origin === 'remote')) {
+    //   const change = patchesToChange(patches, this.state.editorValue, snapshot)
+    //   this.setState({editorValue: change.value})
+    // }
   }
 
   componentWillUnmount() {
     this.unsubscribe()
   }
 
-  focus() {
-    if (this._input) {
-      this._input.focus()
-    }
-  }
-
-  setInput = el => {
-    this._input = el
-  }
-
   render() {
     const {editorValue, deprecatedSchema, deprecatedBlockValue} = this.state
-    const {value} = this.props
+    const {onChange, ...rest} = this.props
 
     const isDeprecated = deprecatedSchema || deprecatedBlockValue
     const {type} = this.props
@@ -108,11 +90,9 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
       <div className={styles.root}>
         {!isDeprecated && (
           <Input
-            {...this.props}
-            onChange={this.handleChange}
-            value={value}
             editorValue={editorValue}
-            ref={this.setInput}
+            onChange={this.handleChange}
+            {...rest}
           />)
         }
 

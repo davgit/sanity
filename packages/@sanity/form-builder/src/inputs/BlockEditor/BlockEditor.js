@@ -1,49 +1,43 @@
 // @flow
-import React from 'react'
+import React, {Element as ReactElement} from 'react'
 
-import EditorCanvas from './EditorCanvas'
 import FullscreenDialog from 'part:@sanity/components/dialogs/fullscreen?'
-import Toolbar from './Toolbar'
+import ScrollContainer from 'part:@sanity/components/utilities/scroll-container'
+
+import Editor from './Editor'
+import EditorCanvas from './EditorCanvas'
+import Toolbar from './Toolbar/Toolbar'
 
 import styles from './styles/BlockEditor.css'
 
 import type {
-  Block,
-  BlockArrayType,
-  Patch,
   SlateChange,
-  SlateValue
+  SlateValue,
+  ToolbarStyle,
+  Type
 } from './typeDefs'
 
 type Props = {
+  editor: ReactElement<typeof Editor>,
   editorValue: SlateValue,
-  onChange: (change: SlateChange, patches: Patch[]) => void,
-  type: BlockArrayType,
-  value: Block[]
-}
-
-export type ToolbarStyle = {
-  backgroundColor?: string,
-  boxShadow? : string
+  fullscreen: boolean,
+  onChange: (change: SlateChange) => void,
+  onToggleFullScreen: void => void,
+  onCanvasClick: void => void,
+  type: Type
 }
 
 type State = {
-  fullscreen: boolean,
   toolbarStyle: ToolbarStyle
 }
 
 export default class BlockEditor extends React.Component<Props, State> {
 
   state = {
-    fullscreen: false,
     toolbarStyle: {}
   }
 
-  handleFullScreenClose = () => {
-    this.setState({
-      fullscreen: false
-    })
-  }
+  editorCanvas = null
 
   handleFullScreenScroll = (event: SyntheticWheelEvent<HTMLDivElement>) => {
     const threshold = 100
@@ -59,57 +53,54 @@ export default class BlockEditor extends React.Component<Props, State> {
     }
   }
 
+  handleCanvasClick = () => {
+    this.props.onCanvasClick()
+  }
+
   renderFullScreen() {
     return (
-      <FullscreenDialog isOpen onClose={this.handleFullScreenClose}>
-        {this.renderCanvas()}
+      <FullscreenDialog isOpen onClose={this.props.onToggleFullScreen}>
+        <ScrollContainer className={styles.fullscreen} onScroll={this.handleFullScreenScroll}>
+          {this.renderEditor()}
+        </ScrollContainer>
       </FullscreenDialog>
     )
   }
 
-  renderCanvas() {
-    const {onChange, value, editorValue, type} = this.props
-    const {fullscreen, toolbarStyle} = this.state
+  renderEditor() {
+    const {
+      editorValue,
+      editor,
+      fullscreen,
+      onChange,
+      onToggleFullScreen,
+      type
+    } = this.props
+    const {toolbarStyle} = this.state
     return (
-      <div>
-        { false && (
-          <Toolbar
-            className={styles.toolbar}
-            onInsertBlock={this.handleInsertBlock}
-            insertBlocks={this.customBlocks}
-            onFullscreenEnable={this.handleToggleFullscreen}
-            fullscreen={this.state.fullscreen}
-            onMarkButtonClick={this.handleOnClickMarkButton}
-            onAnnotationButtonClick={this.handleAnnotationButtonClick}
-            onListButtonClick={this.handleOnClickListFormattingButton}
-            onBlockStyleChange={this.handleBlockStyleChange}
-            listItems={this.getListItems()}
-            blockStyles={this.getBlockStyles()}
-            annotations={this.getActiveAnnotations()}
-            decorators={this.getActiveDecorators()}
-            style={toolbarStyle}
-          />
-        )}
-        <EditorCanvas
-          value={value}
+      <div className={styles.editor}>
+        <Toolbar
           editorValue={editorValue}
-          type={type}
           fullscreen={fullscreen}
           onChange={onChange}
+          onToggleFullScreen={onToggleFullScreen}
+          type={type}
+          style={toolbarStyle}
+        />
+        <EditorCanvas
+          editor={editor}
+          fullscreen={fullscreen}
+          onCanvasClick={this.handleCanvasClick}
         />
       </div>
     )
   }
 
   render() {
-    const {fullscreen} = this.state
-    const classNames = [styles.root]
-    if (fullscreen) {
-      classNames.push(styles.fullscreen)
-    }
+    const {fullscreen} = this.props
     return (
-      <div className={classNames.join(' ')}>
-        {fullscreen ? this.renderFullScreen() : this.renderCanvas()}
+      <div className={styles.root}>
+        {fullscreen ? this.renderFullScreen() : this.renderEditor()}
       </div>
     )
   }

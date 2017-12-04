@@ -2,7 +2,7 @@
 import type {
   Block,
   BlockArrayType,
-  Patch,
+  BlockContentFeatures,
   SlateChange,
   SlateComponentProps,
   SlateMarkProps,
@@ -10,43 +10,31 @@ import type {
 } from './typeDefs'
 
 import React from 'react'
-import blockTools from '@sanity/block-tools'
 import {Editor as SlateEditor} from 'slate-react'
-import changeToPatch from './utils/changeToPatch'
 
 import ContentBlock from './ContentBlock'
 import Decorator from './nodes/Decorator'
 
+import styles from './styles/Editor.css'
+
 type Props = {
+  blockContentFeatures: BlockContentFeatures,
   editorValue: SlateValue,
-  onChange: (change: SlateChange, patches: Patch[]) => void,
+  onChange: (change: SlateChange) => void,
   type: BlockArrayType,
-  value: Block[]
+  value: Block[],
 }
 
 export default class Editor extends React.Component<Props> {
 
-  editor: ?SlateEditor
+  editor: ?SlateEditor = null
 
-  blockContentFeatures: {
-    decorators: [],
-    annotations: [],
-    styles: []
-  }
-
-  constructor(props: Props) {
-    super(props)
-    this.blockContentFeatures = blockTools.getBlockContentFeatures(props.type)
+  getEditor() {
+    return this.editor
   }
 
   refEditor = (editor: ?SlateEditor) => {
     this.editor = editor
-  }
-
-  handleChange = (change: SlateChange) => {
-    const {value} = this.props
-    const patch = changeToPatch(change, value)
-    this.props.onChange(change, patch)
   }
 
   setFocus() {
@@ -63,20 +51,23 @@ export default class Editor extends React.Component<Props> {
 
     }
   }
+
   renderMark = (props: SlateMarkProps) => {
+    const {blockContentFeatures} = this.props
     const type = props.mark.type
-    return this.blockContentFeatures.decorators.includes(type)
+    return blockContentFeatures.decorators.includes(type)
       ? <Decorator {...props} />
       : null
   }
 
   render() {
-    const {editorValue} = this.props
+    const {editorValue, onChange} = this.props
     return (
       <SlateEditor
+        className={styles.slateEditor}
         ref={this.refEditor}
         value={editorValue}
-        onChange={this.handleChange}
+        onChange={onChange}
         renderNode={this.renderNode}
         renderMark={this.renderMark}
       />

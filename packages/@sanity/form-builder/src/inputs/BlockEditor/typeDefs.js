@@ -10,7 +10,8 @@ export type Patch = _Patch
 export type Type = {
   type: Type,
   name: string,
-  options: ?Object
+  options?: Object,
+  of?: []
 }
 
 export type BlockArrayType = Type & {
@@ -39,9 +40,9 @@ export type Block = {
 
 export type SlateNode = {
   type: string,
-  nodes: any,
-  data: Map<any, any>,
-  key: string
+  nodes?: any[],
+  data?: Map<any, any>,
+  key?: string
 }
 
 export type SlateMarkProps = {
@@ -53,14 +54,14 @@ export type SlateMarkProps = {
 }
 
 export type SlateComponentProps = {
-  attributes: {},
+  attributes?: {},
   children: Node[],
-  editor: Node,
-  isSelected: boolean,
-  key: string,
+  editor?: Node,
+  isSelected?: boolean,
+  key?: string,
   node: SlateNode,
-  parent: any,
-  readOnly: boolean
+  parent?: any,
+  readOnly?: boolean
 }
 
 export type BlockItem = {
@@ -68,11 +69,9 @@ export type BlockItem = {
   title: string
 }
 
-export type BlockStyleItem = {
-  key: string,
-  active: boolean,
+export type BlockStyle = {
   title: string,
-  preview: Node
+  value: string
 }
 
 export type ListItem = {
@@ -97,3 +96,14 @@ export type SlateChange = {
 }
 
 export type Annotation = any
+
+export type BlockContentFeatures = {
+  decorators: string[],
+  styles: string[],
+  annotations: string[]
+}
+
+export type ToolbarStyle = {
+  backgroundColor?: string,
+  boxShadow? : string
+}

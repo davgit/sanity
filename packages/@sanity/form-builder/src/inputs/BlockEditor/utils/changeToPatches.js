@@ -36,7 +36,7 @@ function removeNodePatch(operation: SlateOperation, blocks: Block[]) {
   throw new Error("Don't know how to unset that")
 }
 
-export default function changeToPatch(change: SlateChange, blocks: Block[]) {
+export default function changeToPatches(change: SlateChange, blocks: Block[]) {
   const {operations} = change
   return operations.map((operation: SlateOperation) => {
     console.log(operation.type)

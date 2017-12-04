@@ -1,26 +1,22 @@
 @import "part:@sanity/base/theme/variables-style";
 
-:root {
-  --blockEditorFullscreenBackground: var(--gray-lighter);
-}
-
 .root {
   composes: root from 'part:@sanity/base/theme/forms/control-style';
   position: static;
 }
 
-.fullscreen {
+.editor {
   display: block;
 }
 
-.portal {
+.fullscreen {
   position: fixed;
   z-index: var(--zindex-portal);
   height: 100%;
   width: 100%;
   top: 0;
   left: 0;
-  background-color: var(--blockEditorFullscreenBackground);
+  background-color: var(--gray-lighter);
   padding-top: 5rem;
   padding-bottom: 5rem;
   box-sizing: border-box;

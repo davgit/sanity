@@ -1,42 +1,24 @@
 // @flow
-import type {
-  Block,
-  BlockArrayType,
-  Patch,
-  SlateChange,
-  SlateValue
-} from './typeDefs'
-
-import React from 'react'
+import React, {SyntheticEvent} from 'react'
 import ReactDOM from 'react-dom'
 import {Node as SlateNode} from 'slate'
 
 import Editor from './Editor'
-
 import styles from './styles/EditorCanvas.css'
 
 type Props = {
-  editorValue: SlateValue,
-  onChange: (change: SlateChange, patches: Patch[]) => void,
-  type: BlockArrayType,
-  value: Block[],
-  fullscreen: boolean
+  editor: React.Element<typeof Editor>,
+  fullscreen: boolean,
+  onCanvasClick: void => void
 }
 
 export default class EditorCanvas extends React.Component<Props> {
 
-  static defaultProps = {
-    fullscreen: false
-  }
-
   blockDragMarker: ?HTMLDivElement
-  editor: ?Editor
 
   showBlockDragMarker(pos: string, node: SlateNode) {
-    if (!this.editor) {
-      return
-    }
-    const editorDOMNode = ReactDOM.findDOMNode(this.editor)
+    const {editor} = this.props
+    const editorDOMNode = ReactDOM.findDOMNode(editor)
     if (editorDOMNode instanceof HTMLElement) {
       const editorRect = editorDOMNode.getBoundingClientRect()
       const elemRect = node.getBoundingClientRect()
@@ -81,36 +63,31 @@ export default class EditorCanvas extends React.Component<Props> {
     resetNode.style.display = ''
   }
 
-  handleCanvasClick = () => {
-    if (this.editor) {
-      this.editor.setFocus()
-    }
-  }
-
-  refEditor = (editor: ?Editor) => {
-    this.editor = editor
-  }
-
   refBlockDragMarker = (blockDragMarker: ?HTMLDivElement) => {
     this.blockDragMarker = blockDragMarker
   }
 
+  handleCanvasClick = (event: SyntheticEvent) => {
+    event.preventDefault()
+    this.props.onCanvasClick()
+  }
+
   render() {
-    const {onChange, value, editorValue, type} = this.props
+    const {
+      editor,
+      fullscreen,
+    } = this.props
     return (
-      <div className={styles.root}>
-        <div className={styles.canvas} onClick={this.handleCanvasClick}>
-          <Editor
-            ref={this.refEditor}
-            value={value}
-            editorValue={editorValue}
-            type={type}
-            onChange={onChange}
-          />
+      <div
+        className={`${styles.root}${fullscreen ? ` ${styles.fullscreen}` : ''}`}
+        onClick={this.handleCanvasClick}
+      >
+        <div className={styles.canvas}>
+          {editor}
           <div
+            className={styles.blockDragMarker}
             ref={this.refBlockDragMarker}
             style={{display: 'none'}}
-            className={styles.blockDragMarker}
           />
         </div>
       </div>

@@ -1,5 +1,9 @@
 @import "part:@sanity/base/theme/variables-style";
 
+.fullscreen {
+  display: block;
+}
+
 .root {
   position: relative;
   width: 100%;
@@ -10,7 +14,7 @@
   composes: scrollY from "part:@sanity/base/theme/layout/scrolling-style";
   composes: lightScrollbars from "part:@sanity/base/theme/layout/scrolling-style";
 
-  @nest .fullscreen & {
+  @nest &.fullscreen {
     width: 90%;
     min-height: calc(100vh - 8rem);
     max-width: 50em;
@@ -19,7 +23,6 @@
     height: auto;
     overflow: hidden;
     max-height: none;
-    border: none;
     background-color: var(--brand-lightest);
     color: var(--brand-darkest);
   }
