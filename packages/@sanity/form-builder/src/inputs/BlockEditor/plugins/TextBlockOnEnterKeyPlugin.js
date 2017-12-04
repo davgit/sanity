@@ -9,7 +9,7 @@ type Options = {
 // within a block which is not a default block type.
 // I.e: when enter is pressed after a title, start a new empty normal block below
 
-function TextBlockOnEnterKeyPlugin(options: Options = {}) {
+export default function TextBlockOnEnterKeyPlugin(options: Options = {}) {
   const {defaultBlock} = options
   if (!defaultBlock) {
     throw new Error("Missing required option 'defaultBlock'")
@@ -45,5 +45,3 @@ function TextBlockOnEnterKeyPlugin(options: Options = {}) {
     }
   }
 }
-
-export default TextBlockOnEnterKeyPlugin

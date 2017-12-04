@@ -8,7 +8,7 @@ type Options = {
 // This plugin handles enter on empty list elements, deletes it,
 // and either creates a new empty default block or subleveled list block below
 
-function ListItemOnEnterKeyPlugin(options: Options = {}) {
+export default function ListItemOnEnterKeyPlugin(options: Options = {}) {
   const {defaultBlock} = options
   if (!defaultBlock) {
     throw new Error("Missing required option 'defaultBlock'")
@@ -73,5 +73,3 @@ function ListItemOnEnterKeyPlugin(options: Options = {}) {
     }
   }
 }
-
-export default ListItemOnEnterKeyPlugin

@@ -13,6 +13,7 @@ import {Editor as SlateEditor} from 'slate-react'
 import {EDITOR_DEFAULT_BLOCK_TYPE} from '@sanity/block-tools'
 
 import ListItemOnEnterKeyPlugin from './plugins/ListItemOnEnterKeyPlugin'
+import ListItemOnTabKeyPlugin from './plugins/ListItemOnTabKeyPlugin'
 import SetMarksOnKeyComboPlugin from './plugins/SetMarksOnKeyComboPlugin'
 import TextBlockOnEnterKeyPlugin from './plugins/TextBlockOnEnterKeyPlugin'
 
@@ -38,6 +39,7 @@ export default class Editor extends React.Component<Props> {
     super(props)
     this.plugins = [
       ListItemOnEnterKeyPlugin({defaultBlock: EDITOR_DEFAULT_BLOCK_TYPE}),
+      ListItemOnTabKeyPlugin(),
       TextBlockOnEnterKeyPlugin({defaultBlock: EDITOR_DEFAULT_BLOCK_TYPE}),
       SetMarksOnKeyComboPlugin({
         decorators: props.blockContentFeatures.decorators.map(item => item.value)

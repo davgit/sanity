@@ -9,7 +9,7 @@ type Options = {
 // within a block which is not a default block type.
 // I.e: when enter is pressed after a title, start a new empty normal block below
 
-function SetMarksOnKeyComboPlugin(options: Options = {}) {
+export default function SetMarksOnKeyComboPlugin(options: Options = {}) {
   const decorators = options.decorators || []
   return {
     onKeyDown(event: SyntheticKeyboardEvent<*>, change: Change) {
@@ -40,5 +40,3 @@ function SetMarksOnKeyComboPlugin(options: Options = {}) {
     }
   }
 }
-
-export default SetMarksOnKeyComboPlugin
