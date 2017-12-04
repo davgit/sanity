@@ -29,6 +29,27 @@
   }
 }
 
+.blockFormatContainer {
+  max-width: 5em;
+  min-width: 4em;
+  padding-right: 0.5em;
+
+  @media (--screen-medium) {
+    max-width: none;
+    min-width: 8em;
+    padding-top: 0.2em;
+  }
+}
+
+.formatButtonsContainer {
+  display: flex;
+  flex-wrap: nowrap;
+}
+
+.decoratorButtonsContainer {
+  padding-left: 0.5em;
+}
+
 .fullscreenButtonContainer {
   margin-left: auto;
   height: 100%;

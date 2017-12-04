@@ -4,7 +4,7 @@
 
 import PropTypes from 'prop-types'
 import React from 'react'
-import blockTools from '@sanity/block-tools'
+import {blocksToEditorValue} from '@sanity/block-tools'
 import generateHelpUrl from '@sanity/generate-help-url'
 import FormField from 'part:@sanity/components/formfields/default'
 import Input from './Input'
@@ -18,7 +18,7 @@ import styles from './styles/SyncWrapper.css'
 const EMPTY_VALUE = Value.fromJSON(deserialize([]))
 
 function deserialize(value, type) {
-  return Value.fromJSON(blockTools.blocksToSlateState(value, type))
+  return Value.fromJSON(blocksToEditorValue(value, type))
 }
 
 function isDeprecatedBlockSchema(type) {

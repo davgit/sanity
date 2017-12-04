@@ -1,13 +1,15 @@
 // @flow
-import React, {SyntheticEvent} from 'react'
+import type {Element as ReactElement} from 'react'
+import React from 'react'
 import ReactDOM from 'react-dom'
 import {Node as SlateNode} from 'slate'
 
 import Editor from './Editor'
+
 import styles from './styles/EditorCanvas.css'
 
 type Props = {
-  editor: React.Element<typeof Editor>,
+  editor: ReactElement<typeof Editor>,
   fullscreen: boolean,
   onCanvasClick: void => void
 }
@@ -40,34 +42,11 @@ export default class EditorCanvas extends React.Component<Props> {
     }
   }
 
-  // Webkit hack to force the browser to reapply CSS rules
-  // This is needed to make ::before and ::after CSS rules work properly
-  // under certain conditions (like the list counters for number lists)
-  // http://stackoverflow.com/questions/3485365/how-can-i-force-webkit-to-redraw-repaint-to-propagate-style-changes/3485654#3485654
-  refreshCSS = () => {
-    if (!document.documentElement) {
-      return
-    }
-    const isWebkit = 'WebkitAppearance' in document.documentElement.style
-    if (!isWebkit) {
-      return
-    }
-    if (!document.body) {
-      return
-    }
-    // Must be body because we have several scrollcontainers loosing state
-    const resetNode: HTMLElement = document.body
-    resetNode.style.display = 'none'
-    // eslint-disable-next-line no-unused-expressions
-    resetNode.offsetHeight // Looks weird, but it actually has an effect!
-    resetNode.style.display = ''
-  }
-
   refBlockDragMarker = (blockDragMarker: ?HTMLDivElement) => {
     this.blockDragMarker = blockDragMarker
   }
 
-  handleCanvasClick = (event: SyntheticEvent) => {
+  handleCanvasClick = (event: SyntheticEvent<HTMLDivElement>) => {
     event.preventDefault()
     this.props.onCanvasClick()
   }

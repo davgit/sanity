@@ -3,7 +3,7 @@
 import type {Map, List} from 'immutable'
 import type {Node} from 'react'
 import type {Patch as _Patch} from '../../utils/patches'
-import {Value as _SlateValue, Operation as _SlateOperation} from 'slate'
+import {Block as SlateBlock, Value as _SlateValue, Operation as _SlateOperation} from 'slate'
 
 export type Patch = _Patch
 
@@ -69,20 +69,10 @@ export type BlockItem = {
   title: string
 }
 
-export type BlockStyle = {
-  title: string,
-  value: string
-}
-
 export type ListItem = {
   active: boolean,
   type: string,
   title: string
-}
-
-export type DecoratorItem = {
-  active: boolean,
-  type: string
 }
 
 export type SlateValue = _SlateValue
@@ -92,15 +82,22 @@ export type SlateChange = {
   flags: {},
   value: SlateValue,
   operations: List<SlateOperation>,
-  kind: string
+  kind: string,
+  insertBlock: (SlateBlock | SlateNode) => SlateChange,
+  toggleMark: any => SlateChange
 }
 
 export type Annotation = any
 
+export type BlockContentFeature = {
+  title: string,
+  value: string
+}
+
 export type BlockContentFeatures = {
-  decorators: string[],
-  styles: string[],
-  annotations: string[]
+  decorators: BlockContentFeature[],
+  styles: BlockContentFeature[],
+  annotations: BlockContentFeature[]
 }
 
 export type ToolbarStyle = {

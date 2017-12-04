@@ -45,6 +45,10 @@ export function setBlockStyle(change, styleName) {
   })
 }
 
+export function toggleMark(change, mark) {
+  change.toggleMark(mark).focus()
+}
+
 // import {BLOCK_DEFAULT_STYLE, SLATE_DEFAULT_BLOCK, SLATE_SPAN_TYPE} from './constants'
 // import {createProtoValue} from './createProtoValue'
 // import randomKey from './util/randomKey'

@@ -33,8 +33,6 @@ export default class BlockEditorInput extends React.Component<Props, State> {
 
   inputId = uniqueId('BlockEditor')
 
-  blockEditor = null
-
   editor = null
 
   state = {
@@ -78,14 +76,13 @@ export default class BlockEditorInput extends React.Component<Props, State> {
   }
 
   renderEditor(): ReactElement<typeof Editor> {
-    const {onChange, type, value, editorValue} = this.props
+    const {onChange, value, editorValue} = this.props
     return (
       <Editor
         blockContentFeatures={this.blockContentFeatures}
         editorValue={editorValue}
         onChange={onChange}
         ref={this.refEditor}
-        type={type}
         value={value}
       />
     )
@@ -107,13 +104,13 @@ export default class BlockEditorInput extends React.Component<Props, State> {
         </div>
 
         <BlockEditor
+          blockContentFeatures={this.blockContentFeatures}
           editor={editor}
           editorValue={editorValue}
           fullscreen={this.state.fullscreen}
           onCanvasClick={this.handleCanvasClick}
           onChange={onChange}
           onToggleFullScreen={this.handleToggleFullScreen}
-          type={type}
         />
       </FormField>
     )

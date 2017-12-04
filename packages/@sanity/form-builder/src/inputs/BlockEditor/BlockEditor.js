@@ -1,5 +1,6 @@
 // @flow
-import React, {Element as ReactElement} from 'react'
+import type {Element as ReactElement} from 'react'
+import React from 'react'
 
 import FullscreenDialog from 'part:@sanity/components/dialogs/fullscreen?'
 import ScrollContainer from 'part:@sanity/components/utilities/scroll-container'
@@ -11,20 +12,20 @@ import Toolbar from './Toolbar/Toolbar'
 import styles from './styles/BlockEditor.css'
 
 import type {
+  BlockContentFeatures,
   SlateChange,
   SlateValue,
-  ToolbarStyle,
-  Type
+  ToolbarStyle
 } from './typeDefs'
 
 type Props = {
+  blockContentFeatures: BlockContentFeatures,
   editor: ReactElement<typeof Editor>,
   editorValue: SlateValue,
   fullscreen: boolean,
   onChange: (change: SlateChange) => void,
   onToggleFullScreen: void => void,
-  onCanvasClick: void => void,
-  type: Type
+  onCanvasClick: void => void
 }
 
 type State = {
@@ -37,10 +38,8 @@ export default class BlockEditor extends React.Component<Props, State> {
     toolbarStyle: {}
   }
 
-  editorCanvas = null
-
   handleFullScreenScroll = (event: SyntheticWheelEvent<HTMLDivElement>) => {
-    const threshold = 100
+    const threshold = 50
     const scrollTop = event.currentTarget.scrollTop
     if (scrollTop < threshold) {
       const ratio = scrollTop / threshold
@@ -51,10 +50,6 @@ export default class BlockEditor extends React.Component<Props, State> {
         }
       })
     }
-  }
-
-  handleCanvasClick = () => {
-    this.props.onCanvasClick()
   }
 
   renderFullScreen() {
@@ -69,28 +64,28 @@ export default class BlockEditor extends React.Component<Props, State> {
 
   renderEditor() {
     const {
+      blockContentFeatures,
       editorValue,
       editor,
       fullscreen,
       onChange,
-      onToggleFullScreen,
-      type
+      onToggleFullScreen
     } = this.props
     const {toolbarStyle} = this.state
     return (
       <div className={styles.editor}>
         <Toolbar
+          blockContentFeatures={blockContentFeatures}
           editorValue={editorValue}
           fullscreen={fullscreen}
           onChange={onChange}
           onToggleFullScreen={onToggleFullScreen}
-          type={type}
           style={toolbarStyle}
         />
         <EditorCanvas
           editor={editor}
           fullscreen={fullscreen}
-          onCanvasClick={this.handleCanvasClick}
+          onCanvasClick={this.props.onCanvasClick}
         />
       </div>
     )

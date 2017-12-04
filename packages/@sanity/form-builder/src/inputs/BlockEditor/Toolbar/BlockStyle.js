@@ -1,6 +1,6 @@
 // @flow
 
-import type {BlockStyle as BlockStyleType, SlateChange, SlateValue, Type} from '../typeDefs'
+import type {BlockContentFeature, BlockContentFeatures, SlateChange, SlateValue} from '../typeDefs'
 
 import React from 'react'
 import {Block} from 'slate'
@@ -21,34 +21,12 @@ export type BlockStyleItem = {
 }
 
 type Props = {
+  blockContentFeatures: BlockContentFeatures,
   editorValue: SlateValue,
-  onChange: (change: SlateChange) => void,
-  type: Type
+  onChange: (change: SlateChange) => void
 }
 
 export default class BlockStyle extends React.Component<Props> {
-
-  blockStyles = []
-
-  constructor(props: Props) {
-    super(props)
-    const blockType = props.type.of ? props.type.of.find(ofType => ofType.name === 'block') : null
-    if (!blockType) {
-      throw new Error("'block' type is not defined in the schema (required).")
-    }
-    const styleField = blockType.fields.find(field => field.name === 'style')
-    if (!styleField) {
-      throw new Error("A field with name 'style' is not defined in the block type (required).")
-    }
-    const blockStyles = styleField.type.options.list
-      && styleField.type.options.list.filter(style => style.value)
-
-    if (!blockStyles || blockStyles.length === 0) {
-      throw new Error('The style fields need at least one style '
-        + "defined. I.e: {title: 'Normal', value: 'normal'}.")
-    }
-    this.blockStyles = blockStyles
-  }
 
   hasStyle(styleName: string) {
     const {editorValue} = this.props
@@ -56,7 +34,8 @@ export default class BlockStyle extends React.Component<Props> {
   }
 
   getItemsAndValue() {
-    const items = this.blockStyles.map((style: BlockStyleType) => {
+    const {blockContentFeatures} = this.props
+    const items = blockContentFeatures.styles.map((style: BlockContentFeature) => {
       const block = Block.create({
         type: 'contentBlock',
         data: {style: style.value}

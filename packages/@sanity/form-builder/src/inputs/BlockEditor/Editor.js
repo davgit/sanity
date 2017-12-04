@@ -1,7 +1,6 @@
 // @flow
 import type {
   Block,
-  BlockArrayType,
   BlockContentFeatures,
   SlateChange,
   SlateComponentProps,
@@ -11,6 +10,10 @@ import type {
 
 import React from 'react'
 import {Editor as SlateEditor} from 'slate-react'
+import {EDITOR_DEFAULT_BLOCK_TYPE} from '@sanity/block-tools'
+
+import SetMarksOnKeyComboPlugin from './plugins/SetMarksOnKeyComboPlugin'
+import TextBlockOnEnterKeyPlugin from './plugins/TextBlockOnEnterKeyPlugin'
 
 import ContentBlock from './ContentBlock'
 import Decorator from './nodes/Decorator'
@@ -21,13 +24,24 @@ type Props = {
   blockContentFeatures: BlockContentFeatures,
   editorValue: SlateValue,
   onChange: (change: SlateChange) => void,
-  type: BlockArrayType,
   value: Block[],
 }
 
 export default class Editor extends React.Component<Props> {
 
   editor: ?SlateEditor = null
+
+  plugins = []
+
+  constructor(props: Props) {
+    super(props)
+    this.plugins = [
+      TextBlockOnEnterKeyPlugin({defaultBlock: EDITOR_DEFAULT_BLOCK_TYPE}),
+      SetMarksOnKeyComboPlugin({
+        decorators: props.blockContentFeatures.decorators.map(item => item.value)
+      })
+    ]
+  }
 
   getEditor() {
     return this.editor
@@ -55,7 +69,7 @@ export default class Editor extends React.Component<Props> {
   renderMark = (props: SlateMarkProps) => {
     const {blockContentFeatures} = this.props
     const type = props.mark.type
-    return blockContentFeatures.decorators.includes(type)
+    return blockContentFeatures.decorators.map(item => item.value).includes(type)
       ? <Decorator {...props} />
       : null
   }
@@ -68,6 +82,7 @@ export default class Editor extends React.Component<Props> {
         ref={this.refEditor}
         value={editorValue}
         onChange={onChange}
+        plugins={this.plugins}
         renderNode={this.renderNode}
         renderMark={this.renderMark}
       />
