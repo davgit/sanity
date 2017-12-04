@@ -1,6 +1,5 @@
 // @flow
-import type {SlateChange} from '../typeDefs'
-import {Block} from 'slate'
+import {Change, Block} from 'slate'
 
 type Options = {
   defaultBlock?: Block
@@ -13,10 +12,10 @@ type Options = {
 function TextBlockOnEnterKeyPlugin(options: Options = {}) {
   const {defaultBlock} = options
   if (!defaultBlock) {
-    throw new Error("Missing required options 'defaultBlock'")
+    throw new Error("Missing required option 'defaultBlock'")
   }
   return {
-    onKeyDown(event: SyntheticEvent<*>, change: SlateChange) {
+    onKeyDown(event: SyntheticKeyboardEvent<*>, change: Change) {
       if (event.key !== 'Enter') {
         return undefined
       }

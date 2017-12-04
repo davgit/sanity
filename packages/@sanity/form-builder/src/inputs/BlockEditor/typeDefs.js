@@ -3,7 +3,7 @@
 import type {Map, List} from 'immutable'
 import type {Node} from 'react'
 import type {Patch as _Patch} from '../../utils/patches'
-import {Block as SlateBlock, Value as _SlateValue, Operation as _SlateOperation} from 'slate'
+import {Change, Block as SlateBlock, Value as _SlateValue, Operation as _SlateOperation} from 'slate'
 
 export type Patch = _Patch
 
@@ -78,14 +78,7 @@ export type ListItem = {
 export type SlateValue = _SlateValue
 export type SlateOperation = _SlateOperation
 
-export type SlateChange = {
-  flags: {},
-  value: SlateValue,
-  operations: List<SlateOperation>,
-  kind: string,
-  insertBlock: (SlateBlock | SlateNode) => SlateChange,
-  toggleMark: any => SlateChange
-}
+export type SlateChange = Change
 
 export type Annotation = any
 

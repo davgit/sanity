@@ -1,5 +1,5 @@
 // @flow
-import type {SlateChange} from '../typeDefs'
+import {Change} from 'slate'
 
 type Options = {
   decorators?: string[]
@@ -12,7 +12,7 @@ type Options = {
 function SetMarksOnKeyComboPlugin(options: Options = {}) {
   const decorators = options.decorators || []
   return {
-    onKeyDown(event: SyntheticEvent<*>, change: SlateChange) {
+    onKeyDown(event: SyntheticKeyboardEvent<*>, change: Change) {
       const {key, metaKey} = event
       if (!metaKey) {
         return null
