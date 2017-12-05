@@ -41,23 +41,15 @@ type State = {
 
 export default class Span extends React.Component<Props, State> {
 
-  state = {isEditing: false, focusedAnnotationName: undefined}
-
   _clickCounter = 0
   _isMarkingText = false
 
-  componentWillMount() {
-    const focusedAnnotationName = this.props.node.data
-      && this.props.node.data.get('focusedAnnotationName')
-    this.setState({
-      isEditing: false,
-      focusedAnnotationName
-    })
-  }
-
-  componentDidMount() {
-    if (this.state.focusedAnnotationName) {
-      this.setState({isEditing: true})
+  constructor(props: Props) {
+    super(props)
+    const focusedAnnotationName = this.props.node.data.get('focusedAnnotationName')
+    this.state = {
+      isEditing: !!focusedAnnotationName,
+      focusedAnnotationName: focusedAnnotationName
     }
   }
 
@@ -70,7 +62,7 @@ export default class Span extends React.Component<Props, State> {
   }
 
   componentWillUpdate(nextProps: Props, nextState: State) {
-    // If annotations where emptied, just destroy this span (unwrap it to text actually)
+    // If annotations where emptied, just destroy this span (unwrap it to text)
     if (!nextProps.node.data.get('annotations')) {
       this.destroy()
     }
@@ -151,7 +143,7 @@ export default class Span extends React.Component<Props, State> {
   }
 
   // Open dialog when user clicks the node,
-  // but support double clicks, and mark text as normal
+  // but don't act on double clicks (mark text as normal)
   handleMouseDown = () => {
     this._isMarkingText = true
     setTimeout(() => {
@@ -176,9 +168,11 @@ export default class Span extends React.Component<Props, State> {
     const annotations = this.getAnnotations()
     // Try to figure out which annotation that should be focused when user clicks the span
     let focusedAnnotationName
-    if (type.annotations && type.annotations.length === 1) { // Only one annotation type, always focus this one
+    if (type.annotations && type.annotations.length === 1) {
+      // Only one annotation type, always focus this one
       focusedAnnotationName = type.annotations[0].name
-    } else if (annotations && Object.keys(annotations).length === 1) { // Only one annotation value, focus it
+    } else if (annotations && Object.keys(annotations).length === 1) {
+      // Only one annotation value, focus it
       focusedAnnotationName = annotations[Object.keys(annotations)[0]]._type
     }
     if (focusedAnnotationName) {

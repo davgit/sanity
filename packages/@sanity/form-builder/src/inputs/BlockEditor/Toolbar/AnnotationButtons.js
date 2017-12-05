@@ -66,7 +66,8 @@ export default class AnnotationButtons extends React.Component<Props> {
       onChange(change)
       return
     }
-    createFormBuilderSpan(change, item.value)
+    change.call(createFormBuilderSpan, item.value)
+    change.blur()
     onChange(change)
   }
 
