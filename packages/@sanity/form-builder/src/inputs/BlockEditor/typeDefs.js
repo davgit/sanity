@@ -11,7 +11,8 @@ export type Type = {
   type: Type,
   name: string,
   options?: Object,
-  of?: []
+  of?: [],
+  annotations?: {title: string, name: string}[]
 }
 
 export type BlockArrayType = Type & {

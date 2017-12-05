@@ -76,7 +76,7 @@ export default class BlockEditorInput extends React.Component<Props, State> {
   }
 
   renderEditor(): ReactElement<typeof Editor> {
-    const {onChange, value, editorValue} = this.props
+    const {onChange, value, editorValue, type} = this.props
     return (
       <Editor
         blockContentFeatures={this.blockContentFeatures}
@@ -84,6 +84,7 @@ export default class BlockEditorInput extends React.Component<Props, State> {
         onChange={onChange}
         ref={this.refEditor}
         value={value}
+        type={type}
       />
     )
   }

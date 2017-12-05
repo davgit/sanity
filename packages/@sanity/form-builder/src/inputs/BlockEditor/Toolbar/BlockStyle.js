@@ -7,7 +7,7 @@ import {Block} from 'slate'
 
 import {setBlockStyle} from '../utils/changes'
 
-import ContentBlock from '../ContentBlock'
+import ContentBlock from '../nodes/ContentBlock'
 import StyleSelect from 'part:@sanity/components/selects/style'
 
 import styles from './styles/BlockStyle.css'

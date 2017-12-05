@@ -1,0 +1,9 @@
+.root {
+  text-decoration: underline;
+  color: blue;
+}
+
+.editSpanContainer {
+  position: absolute;
+  display: block;
+}

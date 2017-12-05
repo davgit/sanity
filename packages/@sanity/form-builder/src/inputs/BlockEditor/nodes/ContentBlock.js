@@ -1,10 +1,10 @@
 // @flow
-import type {SlateComponentProps} from './typeDefs'
+import type {SlateComponentProps} from '../typeDefs'
 
 import React from 'react'
 
-import ListItem from './nodes/ListItem'
-import Text from './nodes/Text'
+import ListItem from './ListItem'
+import Text from './Text'
 
 export default function ContentBlock(props: SlateComponentProps) {
   const data = props.node.data

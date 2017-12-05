@@ -5,20 +5,23 @@ import type {
   SlateChange,
   SlateComponentProps,
   SlateMarkProps,
-  SlateValue
+  SlateValue,
+  Type
 } from './typeDefs'
 
 import React from 'react'
 import {Editor as SlateEditor} from 'slate-react'
 import {EDITOR_DEFAULT_BLOCK_TYPE} from '@sanity/block-tools'
+import resolveSchemaType from './utils/resolveSchemaType'
 
 import ListItemOnEnterKeyPlugin from './plugins/ListItemOnEnterKeyPlugin'
 import ListItemOnTabKeyPlugin from './plugins/ListItemOnTabKeyPlugin'
 import SetMarksOnKeyComboPlugin from './plugins/SetMarksOnKeyComboPlugin'
 import TextBlockOnEnterKeyPlugin from './plugins/TextBlockOnEnterKeyPlugin'
 
-import ContentBlock from './ContentBlock'
+import ContentBlock from './nodes/ContentBlock'
 import Decorator from './nodes/Decorator'
+import Span from './nodes/Span'
 
 import styles from './styles/Editor.css'
 
@@ -26,6 +29,7 @@ type Props = {
   blockContentFeatures: BlockContentFeatures,
   editorValue: SlateValue,
   onChange: (change: SlateChange) => void,
+  type: Type,
   value: Block[],
 }
 
@@ -62,11 +66,25 @@ export default class Editor extends React.Component<Props> {
   }
 
   renderNode = (props: SlateComponentProps) => {
-    const type = props.node.type
-    switch (type) {
-      case 'contentBlock': return <ContentBlock {...props} />
-      default: throw new Error(`Uknown node type ${type}`)
-
+    const {type, editorValue, onChange} = this.props
+    const nodeType = props.node.type
+    switch (nodeType) {
+      case 'contentBlock':
+        return <ContentBlock {...props} />
+      case 'span':
+        return (
+          <Span
+            attributes={props.attributes}
+            editorValue={editorValue}
+            node={props.node}
+            onChange={onChange}
+            type={resolveSchemaType(type, nodeType)}
+          >
+            {props.children}
+          </Span>
+        )
+      default:
+        throw new Error(`Uknown node type ${nodeType}`)
     }
   }
 

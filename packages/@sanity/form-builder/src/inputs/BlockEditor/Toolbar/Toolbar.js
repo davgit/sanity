@@ -8,6 +8,7 @@ import type {
 
 import React from 'react'
 
+import AnnotationButtons from './AnnotationButtons'
 import BlockStyle from './BlockStyle'
 import Button from 'part:@sanity/components/buttons/default'
 import DecoratorButtons from './DecoratorButtons'
@@ -48,10 +49,20 @@ export default class Toolbar extends React.PureComponent<Props> {
             blockContentFeatures={blockContentFeatures}
           />
         </div>
+
         <div className={styles.canBeMinimized}>
 
           <div className={styles.formatButtonsContainer}>
             <DecoratorButtons
+              editorValue={editorValue}
+              onChange={onChange}
+              blockContentFeatures={blockContentFeatures}
+            />
+
+          </div>
+
+          <div className={styles.annotationButtonsContainer}>
+            <AnnotationButtons
               editorValue={editorValue}
               onChange={onChange}
               blockContentFeatures={blockContentFeatures}

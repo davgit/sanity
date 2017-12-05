@@ -50,6 +50,10 @@
   padding-left: 0.5em;
 }
 
+.annotationButtonsContainer {
+  display: block;
+}
+
 .fullscreenButtonContainer {
   margin-left: auto;
   height: 100%;
