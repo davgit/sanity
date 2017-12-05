@@ -10,6 +10,7 @@ import type {
 } from './typeDefs'
 
 import React from 'react'
+import SoftBreakPlugin from 'slate-soft-break'
 import {Editor as SlateEditor} from 'slate-react'
 import {EDITOR_DEFAULT_BLOCK_TYPE} from '@sanity/block-tools'
 import resolveSchemaType from './utils/resolveSchemaType'
@@ -47,6 +48,10 @@ export default class Editor extends React.Component<Props> {
       TextBlockOnEnterKeyPlugin({defaultBlock: EDITOR_DEFAULT_BLOCK_TYPE}),
       SetMarksOnKeyComboPlugin({
         decorators: props.blockContentFeatures.decorators.map(item => item.value)
+      }),
+      SoftBreakPlugin({
+        onlyIn: [EDITOR_DEFAULT_BLOCK_TYPE.type],
+        shift: true
       })
     ]
   }
