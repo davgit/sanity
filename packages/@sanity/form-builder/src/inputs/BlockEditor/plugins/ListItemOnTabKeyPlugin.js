@@ -3,8 +3,7 @@ import {Change} from 'slate'
 
 type Options = {}
 
-// This plugin handles enter on empty list elements, deletes it,
-// and either creates a new empty default block or subleveled list block below
+// This plugin handles tab key when focus is on list element, and changes the level on it
 
 export default function ListItemOnTabKeyPlugin(options: Options = {}) {
   return {
