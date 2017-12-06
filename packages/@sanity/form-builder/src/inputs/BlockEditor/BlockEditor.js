@@ -23,6 +23,7 @@ type Props = {
   editor: ReactElement<typeof Editor>,
   editorValue: SlateValue,
   fullscreen: boolean,
+  isFocused: boolean,
   onChange: (change: SlateChange) => void,
   onToggleFullScreen: void => void,
   onCanvasClick: void => void
@@ -54,8 +55,14 @@ export default class BlockEditor extends React.Component<Props, State> {
 
   renderFullScreen() {
     return (
-      <FullscreenDialog isOpen onClose={this.props.onToggleFullScreen}>
-        <ScrollContainer className={styles.fullscreen} onScroll={this.handleFullScreenScroll}>
+      <FullscreenDialog
+        isOpen
+        onClose={this.props.onToggleFullScreen}
+      >
+        <ScrollContainer
+          className={styles.fullscreen}
+          onScroll={this.handleFullScreenScroll}
+        >
           {this.renderEditor()}
         </ScrollContainer>
       </FullscreenDialog>
@@ -68,6 +75,7 @@ export default class BlockEditor extends React.Component<Props, State> {
       editorValue,
       editor,
       fullscreen,
+      isFocused,
       onChange,
       onToggleFullScreen
     } = this.props
@@ -84,6 +92,7 @@ export default class BlockEditor extends React.Component<Props, State> {
         />
         <EditorCanvas
           editor={editor}
+          isFocused={isFocused}
           fullscreen={fullscreen}
           onCanvasClick={this.props.onCanvasClick}
         />

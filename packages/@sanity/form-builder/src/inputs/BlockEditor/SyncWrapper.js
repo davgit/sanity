@@ -46,8 +46,12 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     value: PropTypes.array,
     type: PropTypes.object.isRequired,
     onChange: PropTypes.func,
+    onFocus: PropTypes.func,
+    onBlur: PropTypes.func,
     subscribe: PropTypes.func
   }
+
+  _input = null
 
   constructor(props) {
     super()
@@ -69,6 +73,10 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
     // onChange(PatchEvent.from(patches))
   }
 
+  focus() {
+    this._input.focus()
+  }
+
   receivePatches = ({patches, shouldReset, snapshot}) => {
     // if (patches.some(patch => patch.origin === 'remote')) {
     //   const change = patchesToChange(patches, this.state.editorValue, snapshot)
@@ -78,6 +86,10 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
 
   componentWillUnmount() {
     this.unsubscribe()
+  }
+
+  refInput = (input: Input) => {
+    this._input = input
   }
 
   render() {
@@ -92,6 +104,7 @@ export default withPatchSubscriber(class SyncWrapper extends React.PureComponent
           <Input
             editorValue={editorValue}
             onChange={this.handleChange}
+            ref={this.refInput}
             {...rest}
           />)
         }

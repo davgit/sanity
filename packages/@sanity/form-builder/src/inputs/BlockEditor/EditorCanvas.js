@@ -11,6 +11,7 @@ import styles from './styles/EditorCanvas.css'
 type Props = {
   editor: ReactElement<typeof Editor>,
   fullscreen: boolean,
+  isFocused: boolean,
   onCanvasClick: void => void
 }
 
@@ -54,11 +55,19 @@ export default class EditorCanvas extends React.Component<Props> {
   render() {
     const {
       editor,
+      isFocused,
       fullscreen,
     } = this.props
+
+    const classNames = [
+      styles.root,
+      fullscreen ? styles.fullscreen : null,
+      isFocused ? styles.focus : null
+    ].filter(Boolean)
+
     return (
       <div
-        className={`${styles.root}${fullscreen ? ` ${styles.fullscreen}` : ''}`}
+        className={classNames.join(' ')}
         onClick={this.handleCanvasClick}
       >
         <div className={styles.canvas}>

@@ -64,7 +64,7 @@ export default class Editor extends React.Component<Props> {
     this.editor = editor
   }
 
-  setFocus() {
+  focus() {
     if (this.editor) {
       this.editor.focus()
     }

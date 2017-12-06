@@ -17,26 +17,32 @@ import FormField from 'part:@sanity/components/formfields/default'
 
 import BlockEditor from './BlockEditor'
 
+import styles from './styles/Input.css'
+
 type Props = {
   editorValue: SlateValue,
   level: number,
+  onBlur: (nextPath: []) => void,
   onChange: (change: SlateChange) => void,
+  onFocus: (nextPath: []) => void,
   type: BlockArrayType,
   value: Block[]
 }
 
 type State = {
-  fullscreen: boolean
+  fullscreen: boolean,
+  isFocused: boolean
 }
 
 export default class BlockEditorInput extends React.Component<Props, State> {
 
-  inputId = uniqueId('BlockEditor')
+  _inputId = uniqueId('BlockEditor')
 
-  editor = null
+  _editor = null
 
   state = {
-    fullscreen: false
+    fullscreen: false,
+    isFocused: false
   }
 
   blockContentFeatures = {
@@ -59,24 +65,43 @@ export default class BlockEditorInput extends React.Component<Props, State> {
   }
 
   refEditor = (editor: ?Editor) => {
-    this.editor = editor
+    this._editor = editor
   }
 
-  handleFocus = (event?: SyntheticEvent<*>) => {
+  focus() {
+    if (this._editor) {
+      this._editor.focus()
+    }
+  }
+
+  handleFakeFocus = (event?: SyntheticEvent<*>) => {
     if (event) {
       event.preventDefault()
     }
-    if (this.editor) {
-      this.editor.setFocus()
-    }
+    this.focus()
+  }
+
+  handleFocus = (event: SyntheticFocusEvent) => {
+    this.setState({isFocused: true})
+    this.props.onFocus(event)
+  }
+
+  handleBlur = (event: SyntheticBlurEvent) => {
+    this.setState({isFocused: false})
+    this.props.onBlur(event)
   }
 
   handleCanvasClick = () => {
-    this.handleFocus()
+    this.focus()
   }
 
   renderEditor(): ReactElement<typeof Editor> {
-    const {onChange, value, editorValue, type} = this.props
+    const {
+      editorValue,
+      onChange,
+      type,
+      value
+    } = this.props
     return (
       <Editor
         blockContentFeatures={this.blockContentFeatures}
@@ -90,29 +115,47 @@ export default class BlockEditorInput extends React.Component<Props, State> {
   }
 
   render() {
-    const {type, level, editorValue, onChange} = this.props
+    const {
+      type,
+      level,
+      editorValue,
+      onChange
+    } = this.props
+
+    const {
+      fullscreen,
+      isFocused
+    } = this.state
+
     const editor = this.renderEditor()
+
     return (
       <FormField
         label={type.title}
-        labelFor={this.inputId}
+        labelFor={this._inputId}
         description={type.description}
         level={level}
       >
         {/* Make label click work */ }
         <div style={{position: 'absolute', width: '0px', overflow: 'hidden'}}>
-          <input type="text" id={this.inputId} onFocus={this.handleFocus} />
+          <input tabIndex={0} type="text" id={this._inputId} onFocus={this.handleFakeFocus} />
         </div>
 
-        <BlockEditor
-          blockContentFeatures={this.blockContentFeatures}
-          editor={editor}
-          editorValue={editorValue}
-          fullscreen={this.state.fullscreen}
-          onCanvasClick={this.handleCanvasClick}
-          onChange={onChange}
-          onToggleFullScreen={this.handleToggleFullScreen}
-        />
+        <div
+          onBlur={this.handleBlur}
+          onFocus={this.handleFocus}
+        >
+          <BlockEditor
+            blockContentFeatures={this.blockContentFeatures}
+            editor={editor}
+            editorValue={editorValue}
+            fullscreen={fullscreen}
+            isFocused={isFocused}
+            onCanvasClick={this.handleCanvasClick}
+            onChange={onChange}
+            onToggleFullScreen={this.handleToggleFullScreen}
+          />
+        </div>
       </FormField>
     )
   }

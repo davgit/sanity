@@ -181,7 +181,7 @@ export default class Span extends React.Component<Props, State> {
     // If no focusedAnnotationName was found, buttons to edit respective annotations will be show
   }
 
-  handleAnnotationChange = (event: PatchEvent) => {
+  handleChange = (event: PatchEvent) => {
     const {editorValue, node, onChange} = this.props
     const name = this.state.focusedAnnotationName
     const annotations = this.getAnnotations()
@@ -199,7 +199,7 @@ export default class Span extends React.Component<Props, State> {
     onChange(change)
   }
 
-  renderInput() {
+  renderFormBuilderInput() {
     const annotations = this.getAnnotations()
     const annotationTypes = this.props.type.annotations
     const {focusedAnnotationName} = this.state
@@ -212,7 +212,6 @@ export default class Span extends React.Component<Props, State> {
     })
     const annotationValue = focusedAnnotationKey
       && annotations && annotations[focusedAnnotationKey]
-
     return (
       <span className={styles.editSpanContainer}>
         <EditItemPopOver
@@ -245,7 +244,6 @@ export default class Span extends React.Component<Props, State> {
               }
             </div>
           )}
-
           { /* Render input for focused annotation  */ }
           { focusedAnnotationName && (
             <div>
@@ -253,8 +251,7 @@ export default class Span extends React.Component<Props, State> {
                 value={annotationValue}
                 type={annotationTypeInFocus}
                 level={0}
-                onChange={this.handleAnnotationChange}
-                autoFocus
+                onChange={this.handleChange}
               />
             </div>
           )}
@@ -276,7 +273,7 @@ export default class Span extends React.Component<Props, State> {
       >
         {this.props.children}
 
-        { isEditing && this.renderInput() }
+        {isEditing && this.renderFormBuilderInput()}
 
       </span>
     )
